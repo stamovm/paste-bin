@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import { trpc } from '../utils/trpc'
 
 type TechnologyCardProps = {
@@ -9,10 +10,19 @@ type TechnologyCardProps = {
 }
 
 const Home: NextPage = () => {
+  const [snippetText, setSnippetText] = useState('')
+
+  const snippet = trpc.useMutation(['snippet.saveSnippet'])
+
   const hello = trpc.useQuery([
-    'example.hello',
+    'snippet.hello',
     { text: 'from my tRPC project' },
   ])
+
+  const handleSaveSnipplet = async () => {
+    const newSnippet = await snippet.mutateAsync({ text: snippetText })
+    console.log('new snip: ', newSnippet)
+  }
 
   return (
     <>
@@ -23,11 +33,21 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4">
-        <p className="text-2xl text-gray-700">hello world</p>
+        <p className="text-2xl text-gray-700">Paste bin</p>
 
-        <div className="pt-6 text-2xl text-blue-500 flex justify-center items-center w-full">
+        <div className="pt-6 text-2xl text-green-500 flex justify-center items-center w-full">
           {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
         </div>
+        <textarea
+          className="border rounded p-2 w-1/2 h-40"
+          value={snippetText}
+          name="text1"
+          onChange={(e) => setSnippetText(e.target.value)}
+        ></textarea>
+
+        <button className="btn-primary my-4 " onClick={handleSaveSnipplet}>
+          Save
+        </button>
       </main>
     </>
   )
