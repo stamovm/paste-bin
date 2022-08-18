@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { trpc } from '../utils/trpc'
 
@@ -11,6 +12,7 @@ type TechnologyCardProps = {
 
 const Home: NextPage = () => {
   const [snippetText, setSnippetText] = useState('')
+  const router = useRouter()
 
   const snippet = trpc.useMutation(['snippet.saveSnippet'])
 
@@ -21,7 +23,8 @@ const Home: NextPage = () => {
 
   const handleSaveSnipplet = async () => {
     const newSnippet = await snippet.mutateAsync({ text: snippetText })
-    console.log('new snip: ', newSnippet)
+    // console.log('new snip: ', newSnippet)
+    router.push(`/snippets/${newSnippet.id}`)
   }
 
   return (
