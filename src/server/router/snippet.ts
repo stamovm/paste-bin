@@ -2,22 +2,8 @@ import { createRouter } from './context'
 import { z } from 'zod'
 
 export const snippetRouter = createRouter()
-  .query('hello', {
-    input: z
-      .object({
-        text: z.string().nullish(),
-      })
-      .nullish(),
-    resolve({ input }) {
-      return {
-        greeting: `Hello ${input?.text ?? 'world'}`,
-      }
-    },
-  })
   .mutation('saveSnippet', {
-    input: z.object({
-      text: z.string(),
-    }),
+    input: z.object({ text: z.string() }),
     async resolve({ ctx, input }) {
       const snippet = await ctx.prisma.snippet.create({
         data: { text: input.text },
@@ -25,8 +11,17 @@ export const snippetRouter = createRouter()
       return snippet
     },
   })
-// .query('getAll', {
-//   async resolve({ ctx }) {
-//     return await ctx.prisma.example.findMany()
-//   },
-// })
+  .query('getSnippet', {
+    input: z.object({ id: z.string() }),
+    async resolve({ input, ctx }) {
+      const snippet = await ctx.prisma.snippet.findUnique({
+        where: { id: input.id },
+      })
+      return snippet
+    },
+  })
+  .query('getAll', {
+    async resolve({ ctx }) {
+      return await ctx.prisma.snippet.findMany()
+    },
+  })
