@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 
   const handleSaveSnipplet = async () => {
     const newSnippet = await snippet.mutateAsync({ text: snippetText })
-    console.log('new snip: ', newSnippet)
+    // console.log('new snip: ', newSnippet)
     router.push(`/snippets/${newSnippet.id}`)
   }
 
@@ -30,21 +30,21 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
-        <p className="text-2xl text-gray-700">Paste bin</p>
+        <p className="text-2xl  font-bold text-green-800">Paste bin</p>
 
-        <div className="flex w-full items-center justify-center pt-6 text-2xl text-green-500">
-          {/* {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>} */}
-          Paste a snippet or code, and you will get unique id to view it later.
+        <div className="flex w-full items-center justify-center pt-6 pb-1 text-xl text-green-500">
+          Paste a snippet of text, and you will get unique link to view it
+          later.
         </div>
 
         <textarea
-          className="h-40 w-1/2 rounded border p-2"
+          className="h-40 w-1/2 rounded border-2 border-green-600 p-2 text-center focus:border-4 focus:outline-none"
           value={snippetText}
           onChange={(e) => setSnippetText(e.target.value)}
         ></textarea>
 
         <button className="btn-primary my-4 " onClick={handleSaveSnipplet}>
-          Save
+          Save and create a link
         </button>
       </main>
     </>
